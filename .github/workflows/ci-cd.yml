@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Give execute permission to mvnw
+      - name: Rendre mvnw exécutable
         run: chmod +x mvnw
 
       - name: Set up JDK 17
@@ -24,8 +24,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Maven
-        run: ./mvnw clean package --no-transfer-progress
+      - name: Build with Maven (debug enabled)
+        run: ./mvnw clean package -X --no-transfer-progress
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -38,5 +38,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest
-
+          tags: ${{ secrets.DOCKER_USERNAME }}/springboot-product-app:latest
