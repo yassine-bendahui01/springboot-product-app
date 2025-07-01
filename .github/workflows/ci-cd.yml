@@ -1,47 +1,35 @@
-name: CI/CD Pipeline
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
 
       - name: Build with Maven
-        run: ./mvnw clean package --file pom.xml
+        run: mvn clean package --file pom.xml
 
-      - name: Run tests
-        run: ./mvnw test
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: gestionproduits/app:latest
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: yourdockerhubusername/gestionproduits:latest
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest .
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest
