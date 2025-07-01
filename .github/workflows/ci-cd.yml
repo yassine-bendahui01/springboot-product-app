@@ -2,9 +2,9 @@ name: CI/CD Spring Boot Docker
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -24,8 +24,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Maven (debug enabled)
-        run: ./mvnw clean package -X --no-transfer-progress
+      - name: Build with Maven (tests skipped)
+        run: ./mvnw clean package -DskipTests --no-transfer-progress
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -38,4 +38,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/springboot-product-app:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest
