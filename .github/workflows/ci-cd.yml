@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -34,16 +33,15 @@ jobs:
           push: false
           tags: gestionproduits/app:latest
 
-        Optionnel : connexion à Docker Hub et push image
-         - name: Log in to Docker Hub
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-        - name: Push Docker image
-          uses: docker/build-push-action@v4
-          with:
-            context: .
-            push: true
-            tags: yourdockerhubusername/gestionproduits:latest
+      - name: Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: yourdockerhubusername/gestionproduits:latest
