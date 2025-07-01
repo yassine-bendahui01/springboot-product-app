@@ -19,8 +19,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn clean package --file pom.xml
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -29,7 +29,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}//springboot-product-app:latest .
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/gestion-produits-app:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/springboot-product-app:latest
+
