@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build, Push and Deploy to AWS EC2
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -29,8 +29,23 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/springboot-product-app:latest .
+        run: docker build -t yassinebendahui01/springboot-product-app:latest .
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/springboot-product-app:latest
+        run: docker push yassinebendahui01/springboot-product-app:latest
 
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull yassinebendahui01/springboot-product-app:latest
+            docker stop gestion-produits-app || true
+            docker rm gestion-produits-app || true
+            docker run -d --name gestion-produits-app -p 8080:8080 \
+              -e SPRING_DATASOURCE_URL=jdbc:mysql://gpspdb.cdce6qcgk3ki.eu-west-3.rds.amazonaws.com:3306/gpspDB \
+              -e SPRING_DATASOURCE_USERNAME=root \
+              -e SPRING_DATASOURCE_PASSWORD=Y5sDtMmRXnDF80 \
+              yassinebendahui01/springboot-product-app:latest
