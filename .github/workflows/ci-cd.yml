@@ -3,7 +3,7 @@ name: Build, Push and Deploy to AWS EC2
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -49,3 +49,4 @@ jobs:
               -e SPRING_DATASOURCE_USERNAME=root \
               -e SPRING_DATASOURCE_PASSWORD=Y5sDtMmRXnDF80 \
               yassinebendahui01/springboot-product-app:latest
+
